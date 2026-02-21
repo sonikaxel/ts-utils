@@ -79,10 +79,10 @@ web_modules/
 out
 
 # Nuxt.js build / generate output / Nitro
-.nuxt
+.nuxt/
 dist
-.output
-.nitro
+.output/
+.nitro/
 
 # Gatsby files
 .cache/
