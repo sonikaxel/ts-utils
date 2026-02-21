@@ -1,0 +1,2 @@
+## Zod Parser Test
+GET http://[::1]:3000/api/zod-parser-test?name=john&age=5 HTTP/1.1
