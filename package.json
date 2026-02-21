@@ -1,5 +1,6 @@
 {
-  "name": "nitro-app",
+  "name": "ts-utils",
+  "description": "Utility function for typescript project",
   "private": true,
   "scripts": {
     "build": "nitro build",
