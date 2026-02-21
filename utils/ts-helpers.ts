@@ -11,8 +11,7 @@ export function isNonNullable<T>(
  * Finds property (key) is a direct property of the object
  */
 export function findKey<T extends PropertyKey>(obj: Object, key: T) {
-  const hasKey = Object.hasOwn(obj, key);
-  return hasKey ? key : undefined;
+  return Object.hasOwn(obj, key) ? key : undefined;
 }
 
 /**
@@ -28,11 +27,8 @@ export function isValidDate(dtd: Date) {
  */
 export function strToBoolean(data: string) {
   try {
-    const val = data.toLowerCase();
-    const json = JSON.parse(val);
-
+    const json = JSON.parse(data.toLowerCase());
     if (typeof json === 'boolean') return json;
-
     return undefined;
   } catch {
     return undefined;
