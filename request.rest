@@ -1,2 +1,5 @@
-## Zod Parser Test
+### Zod Parser Test
 GET http://[::1]:3000/api/zod-parser-test?name=john&age=5 HTTP/1.1
+
+### Base API Error Test
+GET http://[::1]:3000/api/api-error-test HTTP/1.1
