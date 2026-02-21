@@ -2,8 +2,8 @@ import { createError } from 'h3';
 import { capitalizeWords } from '..';
 import { HTTPStatusCodes, type HTTPStatusCode } from './status-codes';
 
-export function baseAPIError(
-  statusCode: HTTPStatusCode,
+export function baseAPIError<T extends HTTPStatusCode>(
+  statusCode: T,
   details: {
     message: string;
     statusText?: string;
