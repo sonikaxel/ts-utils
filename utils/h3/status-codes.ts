@@ -52,3 +52,4 @@ export const HTTPStatusCodes = {
 } as const;
 
 export type HTTPStatusCode = keyof typeof HTTPStatusCodes;
+export type HTTPStatus = (typeof HTTPStatusCodes)[HTTPStatusCode];

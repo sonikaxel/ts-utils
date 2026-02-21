@@ -26,7 +26,7 @@ export function getRequestIPAddress(
 
 /**
  * Determine the given `ip` is proper `ipv6` or `ipv4`,
- * then returns the appropriate ip.
+ * then returns the appropriate `ip`.
  *
  * If given `ip` is mapped `ipv6` i.e. `::ffff:192.128.1.21`
  * which is `ipv4` mapped to `ipv6`, this will be converted to `ipv4`
