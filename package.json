@@ -5,9 +5,14 @@
   "scripts": {
     "build": "nitro build",
     "dev": "nitro dev",
-    "preview": "node .output/server/index.mjs"
+    "preview": "node .output/server/index.mjs",
+    "db:generate": "npx drizzle-kit generate --config=./config/drizzle.config.ts",
+    "db:migrate": "npx drizzle-kit migrate --config=./config/drizzle.config.ts",
+    "db:studio": "npx drizzle-kit studio --config=./config/drizzle.config.ts"
   },
   "devDependencies": {
+    "@types/node": "^25.3.0",
+    "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.9",
     "h3": "^1.15.4",
     "nitropack": "^2.12.4",
@@ -16,6 +21,7 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.45.1",
+    "pg": "^8.18.0",
     "zod": "^3.25.76"
   }
 }
