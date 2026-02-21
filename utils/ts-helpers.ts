@@ -29,7 +29,11 @@ export function isValidDate(dtd: Date) {
 export function strToBoolean(data: string) {
   try {
     const val = data.toLowerCase();
-    return JSON.parse(val) as boolean;
+    const json = JSON.parse(val);
+
+    if (typeof json === 'boolean') return json;
+
+    return undefined;
   } catch {
     return undefined;
   }
