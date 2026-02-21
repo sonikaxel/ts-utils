@@ -1,7 +1,7 @@
-export function checkEnv(env: NodeJS.ProcessEnv) {
-  const required = ['DATABASE_URL'];
+const REQUIRED_KEYS = ['DATABASE_URL'] as const;
 
-  const missing = required.filter((key) => !env[key]);
+export function checkEnv(env: NodeJS.ProcessEnv) {
+  const missing = REQUIRED_KEYS.filter((key) => !env[key]);
 
   if (missing.length > 0) {
     throw new Error(

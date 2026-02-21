@@ -1,5 +1,5 @@
 import { defineNitroConfig } from 'nitropack/config';
-import { checkEnv } from '~~/config/env.config';
+import { checkEnv } from './config/env.config';
 
 checkEnv(process.env);
 
