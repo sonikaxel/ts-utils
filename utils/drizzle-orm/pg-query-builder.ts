@@ -22,6 +22,7 @@ import {
 import { type PgTableWithColumns } from 'drizzle-orm/pg-core';
 import type { QueryObject, QueryValue } from 'ufo';
 import { isValidDate, strToBoolean } from '..';
+import * as z from 'zod/v4';
 
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 
@@ -301,6 +302,13 @@ async function buildSortBySQL<T extends TableConfig>(opts: {
   return { sql: orders, keys: matchedKeys };
 }
 
+/** Zod schema for pagination query */
+const paginationSchema = z.object({
+  skip: z.coerce.number().nonnegative().optional(),
+  limit: z.coerce.number().min(1).optional(),
+  page: z.coerce.number().min(1).optional(),
+});
+
 /**
  * Build `skip` & `limit` for Pagination.
  * Query `page` will have more priority over `skip`.
@@ -320,22 +328,13 @@ function buildPaginationQuery(opts: {
 }) {
   const { queryObject, defaultLimit } = opts;
 
-  let skip = Number(queryObject.skip);
-  let limit = Number(queryObject.limit);
-  let page = Number(queryObject.page);
+  const parsed = paginationSchema.safeParse(queryObject);
 
-  if (isNaN(skip) || skip < 0) {
-    skip = 0;
-  }
+  let skip = parsed.data?.skip ?? 0;
+  let limit = parsed.data?.limit ?? defaultLimit;
+  let page = parsed.data?.page ?? 1;
 
-  if (isNaN(limit) || limit < 1) {
-    limit = defaultLimit;
-  }
-
-  if (isNaN(page) || page < 1) {
-    page = Math.ceil(skip / limit) + 1;
-  }
-
+  // prioritize `page` over `skip`
   if (queryObject.page != null) {
     skip = (page - 1) * limit;
   }
