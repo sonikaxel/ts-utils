@@ -20,7 +20,7 @@ import {
   type TableConfig,
 } from 'drizzle-orm';
 import { type PgTableWithColumns } from 'drizzle-orm/pg-core';
-import type { QueryObject, QueryValue } from 'ufo';
+import { getQuery, type QueryObject, type QueryValue } from 'ufo';
 import { isValidDate, strToBoolean } from '..';
 import * as z from 'zod/v4';
 
@@ -489,3 +489,17 @@ export const queryBuilder = {
 export function getPageCount(details: { limit: number; total: number }) {
   return Math.ceil(details.total / details.limit);
 }
+
+/**
+ * Parses and decodes the query object of an input URL into an object.
+ *
+ * @alias `getQuery` can be imported from 'ufo'
+ *
+ * @description
+ * if using `h3` then use `useQuery` function which can be imported from `h3`
+ *
+ * @example
+ * getQueryObject("http://foo.com/foo?test=123&unicode=%E5%A5%BD&test=574");
+ * // { test: ["123", "574"], unicode: "好" }
+ */
+export const getQueryObject = (url: string): QueryObject => getQuery(url);
