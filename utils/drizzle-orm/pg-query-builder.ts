@@ -169,13 +169,15 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
     // Pattern Checking Loop
     for (const value of values) {
       // Range Value (value1~value2)
-      if (value.match(/^([\w\-]+)\~([\w\-]+)$/g)?.length) {
+      if (value.match(/^([\w\-\.]+)\~([\w\-\.]+)$/g)?.length) {
         const [minVal, maxVal] = value.split('~');
 
         if (!minVal || !maxVal) continue;
 
         let from = verifyColumnValue(minVal, column, 'gte');
         let to = verifyColumnValue(maxVal, column, 'lte');
+
+        if (!from || !to) continue;
 
         let rangeValue = between(column, from, to);
 
