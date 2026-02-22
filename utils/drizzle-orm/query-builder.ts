@@ -18,13 +18,11 @@ import {
   type BinaryOperator,
   type SQL,
   type TableConfig,
+  type Table,
 } from 'drizzle-orm';
-import { PgTableWithColumns } from 'drizzle-orm/pg-core';
 import { getQuery, type QueryObject, type QueryValue } from 'ufo';
 import * as z from 'zod/v4';
 import { isValidDate, strToBoolean } from '..';
-
-type Table<T extends TableConfig> = PgTableWithColumns<T>;
 
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 
