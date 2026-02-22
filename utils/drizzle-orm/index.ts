@@ -1,1 +1,1 @@
-export * from './pg-query-builder';
+export * from './query-builder';
