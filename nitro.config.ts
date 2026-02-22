@@ -8,4 +8,9 @@ export default defineNitroConfig({
   compatibilityDate: 'latest',
   srcDir: 'server',
   imports: false,
+  storage: {
+    memory: {
+      driver: 'memory',
+    },
+  },
 });
