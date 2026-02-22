@@ -171,8 +171,8 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
 
         if (!minVal || !maxVal) continue;
 
-        let from = verifyColumnValue(minVal, column, 'gt');
-        let to = verifyColumnValue(maxVal, column, 'lt');
+        let from = verifyColumnValue(minVal, column, 'gte');
+        let to = verifyColumnValue(maxVal, column, 'lte');
 
         let rangeValue = between(column, from, to);
 
