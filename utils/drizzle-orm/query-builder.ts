@@ -24,6 +24,8 @@ import { getQuery, type QueryObject, type QueryValue } from 'ufo';
 import * as z from 'zod/v4';
 import { isValidDate, strToBoolean } from '..';
 
+type Table<T extends TableConfig> = AnyTable<T>;
+
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 
 /**
@@ -90,7 +92,7 @@ export function groupQueryObject(
  * Filter out `GroupedQueryObject` by Table Column provided
  */
 async function filterQueryObjectKeys<T extends TableConfig>(opts: {
-  table: AnyTable<T>;
+  table: Table<T>;
   allowedKeys?: ColumnKey<T>[];
   queryObject: QueryObject;
 }) {
@@ -143,7 +145,7 @@ const valueWithOperatorSchema = z.string().regex(/^\w+\.([\w\.\-]+)$/g);
  *   .where(filterSQL);
  */
 async function buildFilterSQL<T extends TableConfig>(opts: {
-  table: AnyTable<T>;
+  table: Table<T>;
   queryObject: QueryObject;
   allowedKeys?: ColumnKey<T>[];
 }) {
@@ -282,7 +284,7 @@ const { asc, desc } = getOrderByOperators();
  *   .orderBy([...sortBySQL]);
  */
 async function buildSortBySQL<T extends TableConfig>(opts: {
-  table: AnyTable<T>;
+  table: Table<T>;
   queryObject: QueryObject;
 }) {
   const { table, queryObject } = opts;
@@ -370,7 +372,7 @@ function buildPaginationQuery(opts: {
  *   .where(searchSQL);
  */
 async function buildSearchSQL<T extends TableConfig>(opts: {
-  table: AnyTable<T>;
+  table: Table<T>;
   queryObject: QueryObject;
   allowedKeys?: ColumnKey<T>[];
 }) {
@@ -453,7 +455,7 @@ export type SQLQueryParams = {
  * });
  */
 export async function buildSQLQueryParams<T extends TableConfig>(
-  table: AnyTable<T>,
+  table: Table<T>,
   config: BuildSQLQueryParamsConfig<T>,
 ): Promise<SQLQueryParams> {
   const { queryObject, filterKeys, searchKeys, defaultLimit } = config;
