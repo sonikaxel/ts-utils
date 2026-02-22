@@ -15,14 +15,14 @@ import {
   getOperators,
   getOrderByOperators,
   getTableColumns,
+  type AnyTable,
   type BinaryOperator,
   type SQL,
   type TableConfig,
 } from 'drizzle-orm';
-import { type PgTableWithColumns } from 'drizzle-orm/pg-core';
 import { getQuery, type QueryObject, type QueryValue } from 'ufo';
-import { isValidDate, strToBoolean } from '..';
 import * as z from 'zod/v4';
+import { isValidDate, strToBoolean } from '..';
 
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 
@@ -90,7 +90,7 @@ export function groupQueryObject(
  * Filter out `GroupedQueryObject` by Table Column provided
  */
 async function filterQueryObjectKeys<T extends TableConfig>(opts: {
-  table: PgTableWithColumns<T>;
+  table: AnyTable<T>;
   allowedKeys?: ColumnKey<T>[];
   queryObject: QueryObject;
 }) {
@@ -141,11 +141,12 @@ const Q_OPERATOR_MAP: Record<QOperator, BinaryOperator> = {
  *   .where(filterSQL);
  */
 async function buildFilterSQL<T extends TableConfig>(opts: {
-  table: PgTableWithColumns<T>;
+  table: AnyTable<T>;
   queryObject: QueryObject;
   allowedKeys?: ColumnKey<T>[];
 }) {
   const { table, allowedKeys, queryObject } = opts;
+  const columns = getTableColumns(table);
 
   const filteredQueryObject = await filterQueryObjectKeys({
     table,
@@ -158,7 +159,7 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
   let filters: (SQL | undefined)[] = [];
 
   for (const { key, values } of filteredQueryObject) {
-    const column = table[key];
+    const column = columns[key];
 
     // SQL for same key, but multiple values
     // use of `OR` Binary Operator
@@ -267,7 +268,7 @@ const { asc, desc } = getOrderByOperators();
  *   .orderBy([...sortBySQL]);
  */
 async function buildSortBySQL<T extends TableConfig>(opts: {
-  table: PgTableWithColumns<T>;
+  table: AnyTable<T>;
   queryObject: QueryObject;
 }) {
   const { table, queryObject } = opts;
@@ -291,8 +292,9 @@ async function buildSortBySQL<T extends TableConfig>(opts: {
     let matchedKey = allowedKeys.find((k) => k === key);
 
     if (!matchedKey) continue;
+    const columns = getTableColumns(table);
 
-    const column = table[matchedKey];
+    const column = columns[matchedKey];
     const order = ord === 'desc' ? desc : asc;
 
     matchedKeys.push(matchedKey);
@@ -354,7 +356,7 @@ function buildPaginationQuery(opts: {
  *   .where(searchSQL);
  */
 async function buildSearchSQL<T extends TableConfig>(opts: {
-  table: PgTableWithColumns<T>;
+  table: AnyTable<T>;
   queryObject: QueryObject;
   allowedKeys?: ColumnKey<T>[];
 }) {
@@ -379,7 +381,8 @@ async function buildSearchSQL<T extends TableConfig>(opts: {
 
   // SQL for search
   const searchSQL = matchKeys.map((key) => {
-    const column = table[key];
+    const columns = getTableColumns(table);
+    const column = columns[key];
 
     return ilike(column, `%${elapsedValue}%`);
   });
@@ -436,7 +439,7 @@ export type SQLQueryParams = {
  * });
  */
 export async function buildSQLQueryParams<T extends TableConfig>(
-  table: PgTableWithColumns<T>,
+  table: AnyTable<T>,
   config: BuildSQLQueryParamsConfig<T>,
 ): Promise<SQLQueryParams> {
   const { queryObject, filterKeys, searchKeys, defaultLimit } = config;
