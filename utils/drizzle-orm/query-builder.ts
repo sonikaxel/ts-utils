@@ -15,16 +15,16 @@ import {
   getOperators,
   getOrderByOperators,
   getTableColumns,
-  type AnyTable,
   type BinaryOperator,
   type SQL,
   type TableConfig,
 } from 'drizzle-orm';
+import { PgTableWithColumns } from 'drizzle-orm/pg-core';
 import { getQuery, type QueryObject, type QueryValue } from 'ufo';
 import * as z from 'zod/v4';
 import { isValidDate, strToBoolean } from '..';
 
-type Table<T extends TableConfig> = AnyTable<T>;
+type Table<T extends TableConfig> = PgTableWithColumns<T>;
 
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 
