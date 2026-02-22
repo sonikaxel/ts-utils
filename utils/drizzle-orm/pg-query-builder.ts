@@ -21,8 +21,8 @@ import {
 } from 'drizzle-orm';
 import { type PgTableWithColumns } from 'drizzle-orm/pg-core';
 import { getQuery, type QueryObject, type QueryValue } from 'ufo';
-import { isValidDate, strToBoolean } from '..';
 import * as z from 'zod/v4';
+import { isValidDate, strToBoolean } from '..';
 
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 
@@ -129,6 +129,8 @@ const Q_OPERATOR_MAP: Record<QOperator, BinaryOperator> = {
   lte,
 };
 
+const valueWithOperatorSchema = z.string().regex(/^\w+\.([\w\.\-]+)$/g);
+
 /**
  * Build SQL Wrapper for Filtering
  *
@@ -191,9 +193,14 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
 
       // With Operator (operator.value)
       if (value.includes('.')) {
-        const [o, v] = value.split('.');
-        const operator = Q_OPERATORS.find((m) => m === o);
+        const parsedValue = valueWithOperatorSchema.safeParse(value);
 
+        if (parsedValue.error) continue;
+
+        const split = parsedValue.data.split('.');
+        const operator = Q_OPERATORS.find((m) => m === split[0]);
+
+        const v = split.slice(1).join('.');
         if (!operator || !v) continue;
 
         const val = verifyColumnValue(v, column, operator);
@@ -233,7 +240,12 @@ export function verifyColumnValue<T extends TableConfig>(
   }
 
   // Date
-  if (column.dataType === 'date' && val.match(/^\d{4}-\d{2}-\d{2}$/g)?.length) {
+  if (column.dataType === 'date') {
+    // zod validation for ISO date
+    const parsedISODate = z.iso.date().safeParse(val);
+
+    if (parsedISODate.error) return undefined;
+
     if (operator === 'lt' || operator === 'lte') {
       val += 'T23:59:59.999Z'; // day end
     }
