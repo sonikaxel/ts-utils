@@ -304,9 +304,9 @@ async function buildSortBySQL<T extends TableConfig>(opts: {
 
 /** Zod schema for pagination query */
 const paginationSchema = z.object({
-  skip: z.coerce.number().nonnegative().optional(),
-  limit: z.coerce.number().min(1).optional(),
-  page: z.coerce.number().min(1).optional(),
+  skip: z.coerce.number().int().nonnegative().optional(),
+  limit: z.coerce.number().int().min(1).optional(),
+  page: z.coerce.number().int().min(1).optional(),
 });
 
 /**
@@ -376,8 +376,6 @@ async function buildSearchSQL<T extends TableConfig>(opts: {
 
   // elapsed value to avoid SQL injection for `ilike` operator
   const elapsedValue = q.replace(/[_%]/g, '\\$&');
-
-  console.log(matchKeys, elapsedValue);
 
   // SQL for search
   const searchSQL = matchKeys.map((key) => {
