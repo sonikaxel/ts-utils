@@ -112,7 +112,7 @@ const SlidingWindowLimitersStorage = useStorage<SlidingWindowLimit>(
 );
 
 /**
- * Rate limiting using liding window log algorithm.
+ * Rate limiting using sliding window log algorithm.
  * @param
  * `opts.window` - Window size in ms, default 60,000 (1min)
  * @param
