@@ -1,9 +1,6 @@
 // utils which required nitropack
 export * from './nitro';
 
-// utils which required drizze-orm
-export * from './drizzle-orm';
-
 // utils which required zod
 export * from './zod';
 

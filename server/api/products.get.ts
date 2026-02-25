@@ -1,12 +1,15 @@
 import { defineEventHandler, getQuery } from 'h3';
-import * as utils from '~~/utils';
-import { tables, db } from '~~/lib/drizzle/db';
+import {
+  buildSQLQueryParams,
+  getPageCount,
+} from '~~/features/sql-query-builder';
+import { db, tables } from '~~/lib/drizzle/db';
 
 export default defineEventHandler(async (event) => {
   const queryObject = getQuery(event);
 
   const { skip, limit, page, sortBySQL, searchFilterSQL } =
-    await utils.buildSQLQueryParams(tables.productsTable, {
+    await buildSQLQueryParams(tables.productsTable, {
       defaultLimit: 10,
       queryObject,
       searchKeys: ['title', 'description', 'brand', 'category'],
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     page,
-    pageCount: utils.getPageCount({ limit, total }),
+    pageCount: getPageCount({ limit, total }),
     limit,
     total,
     data: products,
