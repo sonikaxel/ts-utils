@@ -6,3 +6,10 @@ GET http://[::1]:3000/api/api-error-test HTTP/1.1
 
 ### Products
 GET http://[::1]:3000/api/products?page=1&brand=Samsung,Apple&price=299.99~499.99&q=apple&sortBy=price HTTP/1.1
+
+### Notify Test
+POST http://[::1]:3000/api/notify-test HTTP/1.1
+
+{
+  "message": "hello world"
+}
