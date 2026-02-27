@@ -178,7 +178,7 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
         let from = verifyColumnValue(minVal, column, 'gte');
         let to = verifyColumnValue(maxVal, column, 'lte');
 
-        if (!from || !to) continue;
+        if (!from || !to || !column) continue;
 
         let rangeValue = between(column, from, to);
 
@@ -190,7 +190,7 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
       if (!value.includes('.')) {
         const val = verifyColumnValue(value, column);
 
-        val && sameKeyFilter.push(eq(column, val));
+        val && column && sameKeyFilter.push(eq(column, val));
         continue;
       }
 
@@ -209,7 +209,7 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
         const val = verifyColumnValue(v, column, operator);
         const binaryOperator = Q_OPERATOR_MAP[operator];
 
-        val && sameKeyFilter.push(binaryOperator(column, val));
+        val && column && sameKeyFilter.push(binaryOperator(column, val));
         continue;
       }
     }
@@ -312,7 +312,7 @@ async function buildSortBySQL<T extends TableConfig>(opts: {
     const order = ord === 'desc' ? desc : asc;
 
     matchedKeys.push(matchedKey);
-    orders.push(order(column));
+    column && orders.push(order(column));
   }
 
   return { sql: orders, keys: matchedKeys };
@@ -397,6 +397,7 @@ async function buildSearchSQL<T extends TableConfig>(opts: {
   const searchSQL = matchKeys.map((key) => {
     const columns = getTableColumns(table);
     const column = columns[key];
+    if (!column) return undefined;
 
     return ilike(column, `%${elapsedValue}%`);
   });
