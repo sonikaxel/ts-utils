@@ -1,4 +1,4 @@
-import * as utils from '~~/utils';
+import * as utils from '~~utils';
 
 async function randomPromise() {
   return await new Promise<string>((res, rej) => {

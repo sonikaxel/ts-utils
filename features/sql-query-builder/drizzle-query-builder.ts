@@ -22,7 +22,7 @@ import {
 } from 'drizzle-orm';
 import { getQuery, type QueryObject, type QueryValue } from 'ufo';
 import * as z from 'zod/v4';
-import { isValidDate, strToBoolean } from '~~/utils';
+import { isValidDate, strToBoolean } from '~~utils';
 
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 

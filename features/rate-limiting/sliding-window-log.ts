@@ -1,5 +1,5 @@
 import { H3Event } from 'h3';
-import { baseAPIError, getRequestIPAddress } from '~~/utils';
+import { baseAPIError, getRequestIPAddress } from '~~utils';
 import { SlidingWindowLimitersStorage } from '.';
 
 /**

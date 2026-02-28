@@ -1,5 +1,5 @@
 import { defineEventHandler } from 'h3';
-import * as utils from '~~/utils';
+import * as utils from '~~utils';
 
 export default defineEventHandler((event) => {
   let rand = Math.random();

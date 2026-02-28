@@ -1,6 +1,6 @@
 import { defineEventHandler, getValidatedQuery } from 'h3';
 import * as z from 'zod/v4';
-import * as utils from '~~/utils';
+import * as utils from '~~utils';
 
 const schema = z.object({
   name: z
