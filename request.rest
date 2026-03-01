@@ -13,3 +13,6 @@ POST http://[::1]:3000/api/notify-test HTTP/1.1
 {
   "message": "hello world"
 }
+
+### Object style handler
+GET http://[::1]:3000/api/middleware-test HTTP/1.1

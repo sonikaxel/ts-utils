@@ -13,14 +13,9 @@ import { getRequestIP, H3Event } from 'h3';
  *   const ip = getRequestIPAddress(event); // "192.128.1.21"
  * });
  */
-export function getRequestIPAddress(
-  event: H3Event,
-  opts?: {
-    xForwardedFor: boolean;
-  },
-) {
-  let xForwardedFor = opts?.xForwardedFor ?? true;
-  const reqIp = getRequestIP(event, { xForwardedFor });
+export function getRequestIPAddress(event: H3Event) {
+  const reqIp =
+    getRequestIP(event) ?? getRequestIP(event, { xForwardedFor: true });
   return determineIP(reqIp);
 }
 

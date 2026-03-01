@@ -8,6 +8,13 @@
       "when": 1771691619008,
       "tag": "0000_dry_mac_gargan",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772302240372,
+      "tag": "0001_heavy_jean_grey",
+      "breakpoints": true
     }
   ]
 }

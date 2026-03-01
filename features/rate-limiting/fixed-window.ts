@@ -1,17 +1,50 @@
 import { H3Event } from 'h3';
 import { baseAPIError, getRequestIPAddress } from '~~utils';
-import { FixedWindowLimitersStorage, type FixedWindowLimit } from '.';
+import { createLimiterIndentity } from '.';
+import { IStorage } from '~~/types';
+
+const fwStorage = new Map<string, FixedWindowLimit>();
+
+export type FixedWindowLimit = {
+  count: number;
+  startTime: number;
+  endTime: number;
+};
+
+/** Fixed Window Rate limit storage */
+export const FixedWindowLimitersStorage: IStorage<FixedWindowLimit> = {
+  get: async (key) => {
+    return fwStorage.get(`${key}`);
+  },
+  set: async (key, value) => {
+    fwStorage.set(`${key}`, value);
+    return;
+  },
+  remove: async (key) => {
+    fwStorage.delete(`${key}`);
+    return;
+  },
+  keys: async () => {
+    return [...fwStorage.keys()];
+  },
+  has: async (key) => {
+    return fwStorage.has(key);
+  },
+};
 
 /**
  * Rate limiting using fixed window algorithm.
  * @param
- * `opts.window` - Window size in ms, default 60,000 (1min)
+ * `opts.window` - Window size in sec, default 60 (1min)
  * @param
  * `opts.max` - Max request allowed in given Window, default 50
  */
-export function fixedWindowLimiter(opts?: { window?: number; max?: number }) {
+export function fixedWindowLimiter(
+  name: string,
+  opts?: { window?: number; max?: number },
+) {
   /** Window size in ms */
-  let window: number = opts?.window ?? 60 * 1000;
+  let window: number = opts?.window ? opts.window * 1e3 : 60 * 1e3;
   /** Max request allowed */
   let max: number = opts?.max ?? 50;
 
@@ -25,8 +58,11 @@ export function fixedWindowLimiter(opts?: { window?: number; max?: number }) {
     // ip not found, cannot rate limit without ip
     if (!ip) return;
 
+    // identifier
+    const identifier = createLimiterIndentity(ip, name);
+
     const now = Date.now(); // current timestamp
-    let current = await FixedWindowLimitersStorage.get(ip); // current data
+    let current = await FixedWindowLimitersStorage.get(identifier); // current data
 
     // no current data, initialize new data
     if (!current) {
@@ -57,7 +93,10 @@ export function fixedWindowLimiter(opts?: { window?: number; max?: number }) {
 
   /** Reset rate limit count */
   async function resetCount(ip: string, now: number) {
-    await FixedWindowLimitersStorage.set(ip, {
+    // identifier
+    const identifier = createLimiterIndentity(ip, name);
+
+    await FixedWindowLimitersStorage.set(identifier, {
       count: 1,
       startTime: now,
       endTime: now + window,
@@ -66,21 +105,27 @@ export function fixedWindowLimiter(opts?: { window?: number; max?: number }) {
 
   /** Increment rate limit count */
   async function incrementCount(current: FixedWindowLimit, ip: string) {
+    // identifier
+    const identifier = createLimiterIndentity(ip, name);
+
     current.count++;
-    await FixedWindowLimitersStorage.set(ip, current);
+    await FixedWindowLimitersStorage.set(identifier, current);
   }
 
   async function cleanup() {
     const ips = await FixedWindowLimitersStorage.keys();
 
     for (const ip of ips) {
-      const current = await FixedWindowLimitersStorage.get(ip);
+      // identifier
+      const identifier = createLimiterIndentity(ip, name);
+
+      const current = await FixedWindowLimitersStorage.get(identifier);
       const now = Date.now();
 
       if (!current) continue;
 
       if (now > current.endTime) {
-        await FixedWindowLimitersStorage.remove(ip);
+        await FixedWindowLimitersStorage.remove(identifier);
       }
     }
   }

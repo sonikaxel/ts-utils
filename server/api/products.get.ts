@@ -1,46 +1,13 @@
-import { defineEventHandler, getQuery } from 'h3';
-import {
-  buildSQLQueryParams,
-  getPageCount,
-} from '~~/features/sql-query-builder';
-import { db, tables } from '~~/lib/drizzle/db';
+import { defineEventHandler } from 'h3';
+import { createRateLimitMiddleware } from '~~/server/utils/modules/common';
+import { getProductsHandler } from '~~/server/utils/modules/products/products-handler';
 
-export default defineEventHandler(async (event) => {
-  const queryObject = getQuery(event);
+const rateLimiting = createRateLimitMiddleware('get-products', {
+  max: 5,
+  window: 60,
+});
 
-  const { skip, limit, page, sortBySQL, searchFilterSQL } =
-    await buildSQLQueryParams(tables.productsTable, {
-      defaultLimit: 10,
-      queryObject,
-      searchKeys: ['title', 'description', 'brand', 'category'],
-      filterKeys: [
-        'brand',
-        'category',
-        'id',
-        'sku',
-        'rating',
-        'stock',
-        'price',
-      ],
-    });
-
-  const query = db
-    .select()
-    .from(tables.productsTable)
-    .where(searchFilterSQL)
-    .orderBy(...sortBySQL)
-    .limit(limit)
-    .offset(skip);
-
-  const countQuery = db.$count(tables.productsTable, searchFilterSQL);
-
-  const [products, total] = await Promise.all([query, countQuery]);
-
-  return {
-    page,
-    pageCount: getPageCount({ limit, total }),
-    limit,
-    total,
-    data: products,
-  };
+export default defineEventHandler({
+  onRequest: [rateLimiting],
+  handler: getProductsHandler,
 });

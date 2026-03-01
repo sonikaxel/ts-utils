@@ -9,12 +9,13 @@ export default defineNitroConfig({
   compatibilityDate: 'latest',
   srcDir: 'server',
   imports: false,
+  alias: {
+    '~~': fileURLToPath(new URL('./', import.meta.url)),
+    '~~utils': fileURLToPath(new URL('./utils', import.meta.url)),
+  },
   storage: {
     memory: {
       driver: 'memory',
     },
-  },
-  alias: {
-    '~~utils': fileURLToPath(new URL('./utils', import.meta.url)),
   },
 });

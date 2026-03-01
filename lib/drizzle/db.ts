@@ -14,8 +14,6 @@ export const db = drizzle({
 
 export type DB = typeof db;
 
-export const tables = schema;
-
 const CHANNELS = ['test_channel', 'test_channel_2'] as const;
 
 export const dbAgent = pgClientAgent(dbClient, {
