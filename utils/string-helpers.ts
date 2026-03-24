@@ -15,3 +15,23 @@ export function capitalizeWords(sentence: string, seperator: string = ' ') {
   );
   return capitalizedWords.join(' ');
 }
+
+/**
+ * Generate Random ID
+ * @param [size=16] max length of generated ID, default `16`
+ * @param [prefix=''] prefix for generated ID, default `''`
+ */
+export function generateRandomId(size: number = 16, prefix: string = '') {
+  const chars = '01234abcdfghijklMNOPQRSTUVWXYZmnopqrstuvwxyzABCDEFGHIJKL56789';
+  let _size = prefix ? size - prefix.length - 1 : size;
+  let id = '';
+
+  let i = 0;
+  while(i < _size) {
+    const rand = Math.floor(Math.random() * chars.length);
+    id += chars.charAt(rand);
+    i++;
+  }
+
+  return prefix ? `${prefix}_${id}` : id;
+};
