@@ -17,12 +17,12 @@ import {
   getTableColumns,
   type BinaryOperator,
   type SQL,
-  type TableConfig,
   type Table,
+  type TableConfig,
 } from 'drizzle-orm';
 import { getQuery, type QueryObject, type QueryValue } from 'ufo';
 import * as z from 'zod/v4';
-import { isValidDate, strToBoolean } from '~~utils';
+import { strToBoolean } from '~~utils';
 
 type ColumnKey<T extends TableConfig> = keyof T['columns'];
 
@@ -227,7 +227,7 @@ async function buildFilterSQL<T extends TableConfig>(opts: {
  * and matching operator
  */
 export function verifyColumnValue<T extends TableConfig>(
-  val: string,
+  val: unknown,
   column: T['columns'][keyof T['columns']],
   operator?: QOperator,
 ) {
@@ -235,32 +235,39 @@ export function verifyColumnValue<T extends TableConfig>(
   operator = operator ?? 'eq';
 
   // String
-  if (column.dataType === 'string' && operator === 'eq') return val;
+  if (column.dataType === 'string' && operator === 'eq') return String(val);
 
   // Number
-  if (column.dataType === 'number' && !isNaN(Number(val))) {
-    return Number(val);
+  if (column.dataType === 'number') {
+    let num = Number(val);
+    return isNaN(num) ? undefined : num;
   }
 
   // Date
-  if (column.dataType === 'date') {
+  const dateSchema = z.date();
+  if (
+    column.dataType === 'date' &&
+    (typeof val === 'string' || typeof val === 'number' || val instanceof Date)
+  ) {
     // zod validation for ISO date
-    const parsedISODate = z.iso.date().safeParse(val);
+    const parsedISODate = dateSchema.safeParse(new Date(val));
 
     if (parsedISODate.error) return undefined;
+    let dtd = parsedISODate.data;
 
     if (operator === 'lt' || operator === 'lte') {
-      val += 'T23:59:59.999Z'; // day end
+      dtd = new Date(dtd.toJSON().slice(0, 10) + 'T23:59:59.999Z'); // day end
+      if (dateSchema.safeParse(dtd).error) {
+        return undefined;
+      }
     }
 
-    let dtd = new Date(val);
-
-    if (isValidDate(dtd)) return dtd;
+    return dtd;
   }
 
   // Boolean
   if (column.dataType === 'boolean') {
-    let bool = strToBoolean(val);
+    let bool = strToBoolean(String(val));
 
     if (bool != null) return bool;
   }
