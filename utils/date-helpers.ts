@@ -36,14 +36,14 @@ export function getFinancialYear(dateObj: Date): FinancialYear {
   };
 }
 
-export function getFinancialYearsTillNow(fromDate: Date): FinancialYear[] {
+export function getFinancialYearsForPeriod(fromDate:Date, toDate:Date): FinancialYear[] {
   const fromFy = getFinancialYear(fromDate);
-  const nowFy = getFinancialYear(new Date());
+  const toFy = getFinancialYear(toDate);
 
   let fys: FinancialYear[] = [];
-
   let start = fromFy.start;
-  while (start < nowFy.end) {
+
+  while (start < toFy.end) {
     fys.push(
       getFinancialYear(
         new Date(`${start}-04-01`)
