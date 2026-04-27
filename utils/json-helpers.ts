@@ -1,3 +1,5 @@
+import { z } from 'zod/v4';
+
 /**
  * Converts a JSON string into an object without thowing error on {SyntaxError}
  * like `JSON.parse`.
@@ -14,4 +16,12 @@ export function parseJSON<T = any>(text: string) {
 
     return { error: new Error('Invalid JSON input') };
   }
+}
+
+export function parseJSONZod<T>(text: string, schema: z.ZodType<T>) {
+  const { data, error } = parseJSON(text);
+
+  if (error) return null;
+
+  return schema.safeParse(data).data ?? null;
 }
