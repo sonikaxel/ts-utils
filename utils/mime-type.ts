@@ -1,3 +1,6 @@
+// Deplecated, use file-types library which uses magic number
+// for determing mime types
+
 const jpgRegExp = RegExp(/^ffd8ffe(0|1|2|3|8)/g);
 const pngRegExp = RegExp(/^89504e47/g);
 const gifRegExp = RegExp(/^47494638/g);
