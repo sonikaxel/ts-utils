@@ -1,4 +1,5 @@
 import { getRequestIP, H3Event } from 'h3';
+import { z } from 'zod/v4';
 
 /**
  * Try to get the client IP address from the incoming request.
@@ -16,7 +17,10 @@ import { getRequestIP, H3Event } from 'h3';
 export function getRequestIPAddress(event: H3Event) {
   const reqIp =
     getRequestIP(event) ?? getRequestIP(event, { xForwardedFor: true });
-  return determineIP(reqIp);
+  return {
+    original: reqIp,
+    ip: determineIP(reqIp),
+  };
 }
 
 /**
@@ -31,16 +35,34 @@ export function getRequestIPAddress(event: H3Event) {
 export function determineIP(ip: string | undefined) {
   if (ip == null) return undefined;
 
+  if (isIPv4(ip) != null) return ip;
+
+  let ipv6 = isIPv6(ip);
+
+  if (!ipv6) return undefined;
+
   // localhost ip
-  if (ip === '::1') return '127.0.0.1';
+  if (ipv6 === '::1') return '127.0.0.1';
 
   const V6_MAPPED_PATTERN = '::ffff:';
 
-  if (ip.startsWith(V6_MAPPED_PATTERN)) {
+  if (ipv6.startsWith(V6_MAPPED_PATTERN)) {
     // ipv4 but mapped to ipv6
-    return ip.replace(V6_MAPPED_PATTERN, '').trim();
+    let ipv6Mapped = ipv6.replace(V6_MAPPED_PATTERN, '').trim();
+
+    if (!ipv6Mapped) return undefined;
+
+    return ipv6Mapped;
   }
 
   // ipv6
-  return ip;
+  return ipv6;
+}
+
+function isIPv4(ip: string) {
+  return z.ipv4().safeParse(ip).data;
+}
+
+function isIPv6(ip: string) {
+  return z.ipv6().safeParse(ip).data;
 }

@@ -53,7 +53,7 @@ export function fixedWindowLimiter(
    * @param `H3Event`
    */
   async function init(event: H3Event) {
-    const ip = getRequestIPAddress(event);
+    const ip = getRequestIPAddress(event).ip;
 
     // ip not found, cannot rate limit without ip
     if (!ip) return;
