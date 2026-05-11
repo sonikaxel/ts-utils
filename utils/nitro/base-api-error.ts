@@ -28,27 +28,35 @@ export function baseAPIError<T extends HTTPStatusCode>(
 /** Create an Error message, can be used in catch block */
 export function determineError(error: unknown) {
   if (error instanceof FetchError) {
+    let message = (error.data.message ?? 'Fetch error') as string;
     return {
-      message: (error.data.message ?? 'Fetch error') as string,
+      message,
       payload: error,
+      error: new Error(message),
     };
   }
 
   if (error instanceof H3Error) {
+    let message = error.message ?? 'Fetch error';
     return {
-      message: error.message ?? 'Fetch error',
+      message,
       payload: error,
+      error: new Error(message),
     };
   }
 
   if (error instanceof Error) {
+    let message = error.message;
     return {
-      message: error.message,
+      message,
       payload: error,
+      error: new Error(message),
     };
   }
 
+  let message = 'Something went wrong';
   return {
-    message: 'Something went wrong',
+    message,
+    error: new Error(message),
   };
 }

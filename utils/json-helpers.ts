@@ -1,4 +1,35 @@
-import { z } from 'zod/v4';
+import type z from 'zod';
+
+type JSONPrimitive = string | number | null | undefined;
+
+type JSONValue =
+  | JSONPrimitive
+  | JSONValue[]
+  | {
+      [key: string]: JSONValue;
+    };
+
+type NotAssignableJSON = bigint | symbol | Function;
+
+type DatePrimitive = Date | JSONPrimitive | NotAssignableJSON;
+
+type DateValue<T> = T extends Date
+  ? string
+  : T extends JSONPrimitive
+    ? T
+    : undefined;
+
+export type JSONSerialize<T> = unknown extends T
+  ? never
+  : {
+      [P in keyof T]: T[P] extends JSONValue
+        ? T[P]
+        : T[P] extends DatePrimitive
+          ? DateValue<T[P]>
+          : T[P] extends NotAssignableJSON
+            ? undefined
+            : JSONSerialize<T[P]>;
+    };
 
 /**
  * Converts a JSON string into an object without thowing error on {SyntaxError}
@@ -24,4 +55,8 @@ export function parseJSONZod<T>(text: string, schema: z.ZodType<T>) {
   if (error) return null;
 
   return schema.safeParse(data).data ?? null;
+}
+
+export function serializeJSON<T>(json: T): JSONSerialize<T> {
+  return JSON.parse(JSON.stringify(json));
 }

@@ -1,4 +1,4 @@
-import { getRequestIP, H3Event } from 'h3';
+import { getRequestHeader, getRequestIP, H3Event } from 'h3';
 import { z } from 'zod/v4';
 
 /**
@@ -65,4 +65,8 @@ function isIPv4(ip: string) {
 
 function isIPv6(ip: string) {
   return z.ipv6().safeParse(ip).data;
+}
+
+export function getRequestUserAgent(event: H3Event) {
+  return getRequestHeader(event, 'User-Agent');
 }
