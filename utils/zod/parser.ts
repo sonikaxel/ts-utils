@@ -1,4 +1,4 @@
-import { ZodError, ZodType } from 'zod/v4';
+import { ZodError, ZodType } from 'zod';
 
 type ZodParseReturn<T> = {
   /** Parse data with given schema, throws `Error` on failure */

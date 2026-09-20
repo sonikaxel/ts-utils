@@ -1,5 +1,5 @@
 import { getRequestHeader, getRequestIP, H3Event } from 'h3';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 /**
  * Try to get the client IP address from the incoming request.

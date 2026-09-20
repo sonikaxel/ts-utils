@@ -11,17 +11,17 @@
     "db:studio": "npx drizzle-kit studio --config=./config/drizzle.config.ts"
   },
   "devDependencies": {
-    "@types/node": "^25.3.0",
-    "@types/pg": "^8.16.0",
+    "@types/node": "^25.9.8",
+    "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.9",
     "h3": "^1.15.4",
     "nitropack": "^2.12.4",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.1",
     "pg": "^8.18.0",
-    "zod": "^3.25.76"
+    "zod": "^4.6.5"
   }
 }

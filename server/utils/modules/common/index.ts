@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { H3Event } from 'h3';
-import * as z from 'zod/v4';
+import * as z from 'zod';
 import {
   SlidingWindowLimit,
   slidingWindowLogLimiter,
