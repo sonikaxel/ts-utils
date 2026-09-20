@@ -1,4 +1,6 @@
 import type z from 'zod';
+// Alternatively, `Serialize` from nitropack can be used instend of `JSONSerialize`
+// import type { Serialize } from 'nitropack/types';
 
 type JSONPrimitive = string | number | null | undefined;
 

@@ -1,3 +1,5 @@
+// import { logger } from 'nuxt/kit'; // Alternative if using nuxt
+
 export const useLogger = (prefix?: string) => {
   const time = () => {
     let now = new Date().toLocaleTimeString();
