@@ -1,7 +1,7 @@
 import { H3Event, setHeader } from 'h3';
 import { baseAPIError, getRequestIPAddress } from '~~utils';
 import { createLimiterIndentity } from '.';
-import { IStorage } from '~~/types';
+import { IStorage } from '.';
 
 const swStorage = new Map<string, SlidingWindowLimit>();
 

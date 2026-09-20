@@ -1,7 +1,7 @@
 import { H3Event } from 'h3';
 import { baseAPIError, getRequestIPAddress } from '~~utils';
 import { createLimiterIndentity } from '.';
-import { IStorage } from '~~/types';
+import { IStorage } from '.';
 
 const fwStorage = new Map<string, FixedWindowLimit>();
 

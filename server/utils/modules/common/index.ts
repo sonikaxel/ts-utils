@@ -7,7 +7,7 @@ import {
 } from '~~/features/rate-limiting/sliding-window-log';
 import { db } from '~~/lib/drizzle/db';
 import { kvStoreTable } from '~~/lib/drizzle/schemas';
-import { IStorage } from '~~/types';
+import { IStorage } from '~~/features/rate-limiting';
 
 export type ModuleReturn<T> = {
   handler: (event: H3Event) => Promise<T>;
