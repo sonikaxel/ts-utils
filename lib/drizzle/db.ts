@@ -1,7 +1,9 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle, NodePgQueryResultHKT } from 'drizzle-orm/node-postgres';
 import { Client } from 'pg';
 import { pgClientAgent } from '~~/features/node-postgres';
 import * as schema from './schemas';
+import { PgTransaction } from 'drizzle-orm/pg-core';
+import { ExtractTablesWithRelations } from 'drizzle-orm';
 
 export const dbClient = new Client({
   connectionString: process.env.DATABASE_URL!,
@@ -19,3 +21,9 @@ const CHANNELS = ['test_channel', 'test_channel_2'] as const;
 export const dbAgent = pgClientAgent(dbClient, {
   channels: [...CHANNELS],
 });
+
+export type DBTransaction = PgTransaction<
+  NodePgQueryResultHKT,
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;

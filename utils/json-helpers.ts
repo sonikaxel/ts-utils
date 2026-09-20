@@ -21,6 +21,9 @@ type DateValue<T> = T extends Date
     ? T
     : undefined;
 
+/**
+ * Serialize type, alternate to `Serialize` type from 'nitropack/types'
+ */
 export type JSONSerialize<T> = unknown extends T
   ? never
   : {
@@ -51,6 +54,11 @@ export function parseJSON<T = any>(text: string) {
   }
 }
 
+/**
+ * Converts a JSON string into an object using `zod`.
+ * @param text A valid JSON string.
+ * @param schema A `zod` schema, will be use to parse the json.
+ */
 export function parseJSONZod<T>(text: string, schema: z.ZodType<T>) {
   const { data, error } = parseJSON(text);
 
@@ -59,6 +67,7 @@ export function parseJSONZod<T>(text: string, schema: z.ZodType<T>) {
   return schema.safeParse(data).data ?? null;
 }
 
+/** A wrapper of `JSON.stringify` with typesafety */
 export function serializeJSON<T>(json: T): JSONSerialize<T> {
   return JSON.parse(JSON.stringify(json));
 }

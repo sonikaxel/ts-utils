@@ -3,7 +3,7 @@ import crypto from 'crypto';
 /**
  * Generate Crypographics random string.
  * @param length size of Id, default `32`
- * @description requires `nodejs` environment
+ * @description requires `nodejs` environment, cannot be run on browser
  * */
 export const generateCryptoId = (length: number = 32) => {
   if (!Number.isInteger(length)) {

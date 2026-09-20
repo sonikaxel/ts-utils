@@ -8,6 +8,10 @@ export type FinancialYear = {
   };
 };
 
+/**
+ * Get `FinancialYear` from a given `Date` object
+ * @param dateObj any `Date` to get FY from
+ * */
 export function getFinancialYear(dateObj: Date): FinancialYear {
   const startMonthIndex = 3; // April as start of the Financial Year
   const currentYear = dateObj.getFullYear();
@@ -36,7 +40,15 @@ export function getFinancialYear(dateObj: Date): FinancialYear {
   };
 }
 
-export function getFinancialYearsForPeriod(fromDate:Date, toDate:Date): FinancialYear[] {
+/**
+ * Get array of `FinancialYear` from a given `Date` range
+ * @param fromDate start `Date`
+ * @param toDate end `Date`
+ * */
+export function getFinancialYearsForPeriod(
+  fromDate: Date,
+  toDate: Date,
+): FinancialYear[] {
   const fromFy = getFinancialYear(fromDate);
   const toFy = getFinancialYear(toDate);
 
@@ -44,11 +56,7 @@ export function getFinancialYearsForPeriod(fromDate:Date, toDate:Date): Financia
   let start = fromFy.start;
 
   while (start < toFy.end) {
-    fys.push(
-      getFinancialYear(
-        new Date(`${start}-04-01`)
-      )
-    );
+    fys.push(getFinancialYear(new Date(`${start}-04-01`)));
     start++;
   }
 

@@ -15,6 +15,10 @@ function expandAlphabet(alphabet: BaseAlphabets) {
   }
 }
 
+/**
+ * Random string generator, if required more control over
+ * characters needed in random generated string
+ * */
 function createRandomStringGenerator(...baseAlphabets: BaseAlphabets[]) {
   const baseCharSet = baseAlphabets.map(expandAlphabet).join('');
   if (baseCharSet.length === 0) {
@@ -63,6 +67,12 @@ function createRandomStringGenerator(...baseAlphabets: BaseAlphabets[]) {
   };
 }
 
+/**
+ * Generate a random alphanumeric string/id,
+ * can be used in browser environment.
+ * For more control over characters use `createRandomStringGenerator`
+ * @param size size of random string/id
+ */
 const generateId = (size: number) => {
   return createRandomStringGenerator('a-z', 'A-Z', '0-9')(size || 32);
 };
