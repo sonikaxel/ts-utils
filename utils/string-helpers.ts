@@ -35,3 +35,27 @@ export function generateRandomId(size: number = 16, prefix: string = '') {
 
   return prefix ? `${prefix}_${id}` : id;
 };
+
+/**
+ * Match a path with given pattern.
+ * @param path target path to match
+ * @param pattern match pattern
+ */
+export function matchGlob(path: string, pattern: string): boolean {
+  // 1. Check if the pattern ends with /**
+  if (pattern.endsWith('/**')) {
+    // Strip the '/**' and escape special regex characters
+    const base = pattern.slice(0, -3).replace(/[.+^${}()|[\]\\]/g, '\\$&');
+    // Match the base path exactly, OR the base path followed by a slash and anything else
+    const regex = new RegExp(`^${base}(/.*)?$`);
+    return regex.test(path);
+  }
+
+  // 2. Fallback for standard globs
+  const regexPath = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    .replace(/\*\*/g, '.*')
+    .replace(/\*/g, '[^/]*');
+
+  return new RegExp(`^${regexPath}$`).test(path);
+}
